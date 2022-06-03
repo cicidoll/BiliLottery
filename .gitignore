@@ -1,2 +1,4 @@
 /venv/
 comments.txt
+/__pycache__/
+main.spec
