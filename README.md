@@ -38,14 +38,14 @@
 
 1. Python3.8+
 2. 需要的包依赖：  
-certifi==2022.5.18.1
-charset-normalizer==2.0.12
-colorama==0.4.4
-idna==3.3
-loguru==0.6.0
-requests==2.27.1
-urllib3==1.26.9
-win32-setctime==1.1.0
+certifi==2022.5.18.1  
+charset-normalizer==2.0.12  
+colorama==0.4.4  
+idna==3.3  
+loguru==0.6.0  
+requests==2.27.1  
+urllib3==1.26.9  
+win32-setctime==1.1.0  
 
 ###### **安装步骤**
 
