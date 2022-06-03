@@ -1,6 +1,7 @@
 # B站动态抽奖
 
 针对B站动态评论，可以进行手动抽奖
+每次执行，会将获取到的所有评论数据保存在根目录下的comments.txt
 
   <h3 align="center">B站动态抽奖</h3>
   <p align="center">
