@@ -222,6 +222,8 @@ if __name__ == '__main__':
     try:
         logger.info("开始获取链接为https://t.bilibili.com/%s的动态" % Config.data['oid'])
         run()
-        logger.info("抽奖已结束")
+        logger.info("抽奖已结束,请按任意键关闭窗口。")
+        input()
+
     except KeyboardInterrupt:
         logger.info("退出")
