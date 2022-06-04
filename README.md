@@ -38,23 +38,27 @@
 
 1. Python3.8+
 2. 需要的包依赖：  
+altgraph==0.17.2  
 certifi==2022.5.18.1  
 charset-normalizer==2.0.12  
 colorama==0.4.4  
+future==0.18.2  
 idna==3.3  
 loguru==0.6.0  
+pefile==2022.5.30  
+pyinstaller==5.1  
+pyinstaller-hooks-contrib==2022.6  
+pywin32-ctypes==0.2.0  
 requests==2.27.1  
 urllib3==1.26.9  
 win32-setctime==1.1.0  
-
+  
 ###### **安装步骤**
 
 1. 安装上述所需包依赖
 2. 配置根目录下config.json，参数介绍  
  "oid": -1,  # 动态的oid，可以从动态网站链接中截取  
- "level": 0,  # 等级最低限制  
- "sort": 0,  # 0表示按照时间排序; 2表示按照热度排序  
- "times": 3,  # 单次请求出错的重试次数  
+ "level": 0,  # 等级最低限制   
  "choice_numbers": 1  # 需要选取的人数  
 
 ### 文件目录说明
@@ -77,9 +81,14 @@ filetree
 
 ### 更新日志
 
+2022-06-04  
+版本号：1.1.0  
+1. 添加了解析动态comment_id_str与comment_type，理论上支持任意动态的抽奖。  
+2. 优化程序逻辑
+————————————————————
 2022-06-03  
 版本号：1.0.0  
-1. 初始版本
+1. 初始版本  
 
 ### 作者
 
