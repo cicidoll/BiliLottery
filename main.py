@@ -1,13 +1,11 @@
-import enum
 import urllib.request
 import json
 from pathlib import Path
 import time
 import sys
 import random
-from requests import request
-from typing import Tuple
-
+import requests
+from apscheduler.schedulers.blocking import BlockingScheduler
 from loguru import logger
 
 logger.remove()
@@ -69,7 +67,7 @@ class Process:
     """ 获取&处理动态评论数据类 """
     def __init__(self) -> None:
         # 评论分页
-        self.page = 1
+        self.next = 0
         # 评论总列表
         self.comment_list = []
         # 用户UID与名称对应字典
@@ -124,7 +122,7 @@ class Process:
                 self.get_sub_user_data(response)
 
             # 分页自增
-            self.page += 1
+            self.next += 1
         # 记录所有参加人数
         self.process_comment_list()
         # 选取中奖人
@@ -141,7 +139,9 @@ class Process:
         # UA配置
         headers: dict[str, str] = {
             'User-Agent':
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36'
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
+            "origin": "https://t.bilibili.com",
+            "referer": ("https://t.bilibili.com/%d"%Config.data['oid'])
         }
         try:
             html: urllib.request.Request = urllib.request.Request(
@@ -165,23 +165,26 @@ class Process:
         # 单次请求间隔0.5秒
         time.sleep(0.5)
         # 开始请求
-        url: str = 'https://api.bilibili.com/x/v2/reply?jsonp=jsonp&pn=%d&type=%d&oid=%s&sort=%d' % (
-            self.page,
-            self.comment_type,
-            self.comment_id_str,
-            Config.data['sort']
-        )
+        url: str = 'https://api.bilibili.com/x/v2/reply/main'
+        # params配置
+        params = {
+            "next": self.next,
+            "type": self.comment_type,
+            "oid": self.comment_id_str
+        }
         # UA配置
         headers: dict[str, str] = {
             'User-Agent':
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36'
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
+            'origin': "https://t.bilibili.com",
+            "referer": ("https://t.bilibili.com/%d"%Config.data['oid'])
         }
         try:
-            html: urllib.request.Request = urllib.request.Request(
+            response = requests.get(
                 url = url,
-                headers = headers
-            )
-            response: dict = json.loads(urllib.request.urlopen(html).read().decode('utf-8'))
+                headers = headers,
+                params = params
+            ).json()
 
             if response["code"] != 0:
                 logger.error("请求出错，错误信息%s，请检查配置文件或联系开发人员排查问题。" % (response["message"] ))
@@ -272,12 +275,23 @@ def run():
     process.run()
     Utils.save_json_file('comments.txt', process.comment_list)
 
-if __name__ == '__main__':
+def main():
     try:
         logger.info("开始获取链接为https://t.bilibili.com/%s的动态" % Config.data['oid'])
         run()
         logger.info("抽奖已结束,请按任意键关闭窗口。")
         input()
+    except KeyboardInterrupt:
+        logger.info("退出")
 
+if __name__ == '__main__':
+    try:
+        # 定时抽奖
+        # schedular_time_str: str = '2022-6-5 00:00:01'
+        # logger.info("已定时抽奖：%s" % (schedular_time_str))
+        # schedular = BlockingScheduler()
+        # schedular.add_job(main, 'date', run_date = schedular_time_str, timezone='Asia/Shanghai')
+        # schedular.start()
+        main()
     except KeyboardInterrupt:
         logger.info("退出")
